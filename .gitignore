@@ -1,0 +1,35 @@
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*password*
+*secret*
+*credentials*
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+
+# Kubernetes local configuration
+kubeconfig
+.kube/
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# Operating system and editor files
+.DS_Store
+Thumbs.db
+.vscode/
