@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: ecommerce-api
+  namespace: ecommerce
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: ecommerce-api
+
+  template:
+    metadata:
+      labels:
+        app: ecommerce-api
+
+    spec:
+      containers:
+        - name: ecommerce-api
+          image: abc-ecommerce-api:v1
+          imagePullPolicy: Never
+
+          ports:
+            - containerPort: 8000
+              name: http
+
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ecommerce-db-secret
+                  key: POSTGRES_PASSWORD
+
+            - name: DATABASE_URL
+              value: "postgresql://ecommerce_user:$(POSTGRES_PASSWORD)@db:5432/ecommerce"

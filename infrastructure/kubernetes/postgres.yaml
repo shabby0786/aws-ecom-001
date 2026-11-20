@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: ecommerce-db
+  namespace: ecommerce
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: ecommerce-db
+
+  template:
+    metadata:
+      labels:
+        app: ecommerce-db
+
+    spec:
+      containers:
+        - name: postgres
+          image: docker.io/library/postgres:16
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 5432
+              name: postgres
+
+          env:
+            - name: POSTGRES_DB
+              value: ecommerce
+
+            - name: POSTGRES_USER
+              value: ecommerce_user
+
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ecommerce-db-secret
+                  key: POSTGRES_PASSWORD
+
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - ecommerce_user
+                - -d
+                - ecommerce
+            initialDelaySeconds: 5
+            periodSeconds: 5
+
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: ecommerce-db-pvc
