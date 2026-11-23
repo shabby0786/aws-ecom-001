@@ -33,3 +33,7 @@ kubeconfig
 .DS_Store
 Thumbs.db
 .vscode/
+
+# Terraform plan files
+tfplan
+*.tfplan
